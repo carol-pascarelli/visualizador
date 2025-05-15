@@ -26,6 +26,7 @@ def imagem_para_bytes(imagem):
 
 janela = sg.Window("Visualizador de Imagens", get_layout(), resizable=True)
 
+
 imagem_original = None
 imagem_editada = None
 
@@ -45,21 +46,25 @@ while True:
     elif evento == "Salvar Imagem" and imagem_editada is not None:
         salvar = sg.popup_get_file("Salvar como", save_as=True, file_types=(("PNG", "*.png"),))
         if salvar:
-            img_salvar = imagem_processada
+            img_salvar = imagem_editada
             if len(img_salvar.shape) == 2:
                 img_salvar = cv2.cvtColor(img_salvar, cv2.COLOR_GRAY2BGR)
             cv2.imwrite(salvar, img_salvar)
             sg.popup("Imagem salva com sucesso!")
 
     elif evento == "Limpar Filtros" and imagem_original is not None:
-        imagem_processada = imagem_original.copy()
-        janela["-PROCESSED-"].update(data=imagem_para_bytes(imagem_processada))
+        imagem_editada = imagem_original.copy()
+        janela["-EDITADA-"].update(data=imagem_para_bytes(imagem_editada))
 
-    elif evento == "Inverter Cores" and imagem_editada is not None:
+    elif evento == "Escala de Cinza" and imagem_editada is not None:
+        imagem_editada = apply_cinza(imagem_editada, "")
+        janela["-EDITADA-"].update(data=imagem_para_bytes(imagem_editada))
+
+    elif evento == "Inversão de Cores" and imagem_editada is not None:
         imagem_editada = apply_inversao(imagem_editada, "")
         janela["-EDITADA-"].update(data=imagem_para_bytes(imagem_editada))
 
-    elif evento == "Contraste" and imagem_editada is not None:
+    elif evento == "Aumento de Contraste" and imagem_editada is not None:
         imagem_editada = apply_contraste(imagem_editada, "")
         janela["-EDITADA-"].update(data=imagem_para_bytes(imagem_editada))
 
@@ -75,7 +80,7 @@ while True:
         imagem_editada = apply_bordas(imagem_editada, "")
         janela["-EDITADA-"].update(data=imagem_para_bytes(imagem_editada))
 
-    elif evento == "Aplicar Rotação" and imagem_editada is not None:
+    elif evento == "Rotacionar" and imagem_editada is not None:
         try:
             angulo = valores["-ANGULO-"]
             imagem_editada = apply_rotacionar(imagem_editada, angulo)
@@ -83,7 +88,7 @@ while True:
         except:
             sg.popup_error("Erro ao aplicar rotação. Verifique o valor do ângulo.")
 
-    elif evento == "Aplicar Redimensionamento" and imagem_editada is not None:
+    elif evento == "Redimensionar" and imagem_editada is not None:
         try:
             largura = valores["-LARG-"]
             altura = valores["-ALT-"]

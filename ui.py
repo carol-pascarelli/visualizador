@@ -10,7 +10,7 @@ def get_layout():
 
     right_col = [
         [sg.Text('Imagem Processada')],
-        [sg.Image(key='-PROCESSED-', size=MAX_DISPLAY_SIZE)],
+        [sg.Image(key='-EDITADA-', size=MAX_DISPLAY_SIZE)],
     ]
 
     layout = [

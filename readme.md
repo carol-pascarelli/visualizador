@@ -20,3 +20,5 @@ pip install -r requirements.txt
 
 ## Demonstração
 &emsp; Abaixo está um vídeo demonstrativo da usabilidade do sistema e do código principal. 
+
+[Vídeo Explicativo](https://youtu.be/TUtwDa3OQ5U?si=D64tAtGrFES6Fd3s)
