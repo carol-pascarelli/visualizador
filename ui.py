@@ -13,27 +13,15 @@ def get_layout():
         [sg.Image(key='-PROCESSED-', size=MAX_DISPLAY_SIZE)],
     ]
 
-    controls = [
-        sg.Button('Upar Imagem'),
-        sg.Combo([
-            'Escala de Cinza',
-            'Inversão de Cores',
-            'Aumento de Contraste',
-            'Desfoque',
-            'Nitidez',
-            'Detecção de Bordas',
-            'Rotação',
-            'Redimensionamento'], 
-            key='-FILTER-', enable_events=True),
-        sg.Button('Aplicar Filtro'),
-        sg.Button('Salvar Imagem'),
-        sg.Text('Parâmetros:'),
-        sg.Input(key='-PARAMS-', size=(10,1)),
-    ]
-
     layout = [
         [sg.Column(left_col), sg.Column(right_col)],
-        [controls],
+        [sg.Button('Carregar Imagem'), sg.Button('Salvar Imagem'), sg.Button('Limpar Filtros')],
+        [sg.Button('Escala de Cinza'), sg.Button('Inversão de Cores'),
+         sg.Button('Aumento de Contraste'), sg.Button('Desfoque'),
+         sg.Button('Nitidez'), sg.Button('Detecção de Bordas')],
+        [sg.Text('Rotação (graus):'), sg.Input('0', size=(5,1), key='-ANGULO-'), sg.Button('Rotacionar')],
+        [sg.Text('Redimensionar - Largura:'), sg.Input('300', size=(5,1), key='-LARG-'),
+         sg.Text('Altura:'), sg.Input('300', size=(5,1), key='-ALT-'), sg.Button('Redimensionar')],
     ]
 
     return layout

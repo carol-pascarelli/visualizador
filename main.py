@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 from io import BytesIO
 
-# Importar filtros modularizados
+from ui import get_layout
 from alteracoes.cinza import apply_cinza
 from alteracoes.inversao import apply_inversao
 from alteracoes.contraste import apply_contraste
@@ -14,7 +14,6 @@ from alteracoes.bordas import apply_bordas
 from alteracoes.rotacionar import apply_rotacionar
 from alteracoes.redimensionar import apply_redimensionar
 
-# Converter imagem para formato de exibição no PySimpleGUI
 def imagem_para_bytes(imagem):
     if len(imagem.shape) == 2:
         imagem = cv2.cvtColor(imagem, cv2.COLOR_GRAY2RGB)
@@ -25,20 +24,7 @@ def imagem_para_bytes(imagem):
         im.save(output, format="PNG")
         return output.getvalue()
 
-# Interface gráfica
-layout = [
-    [sg.Text("Visualizador de Imagens", font=("Helvetica", 16))],
-    [sg.Button("Carregar Imagem"), sg.Button("Salvar Imagem")],
-    [sg.Button("Escala de Cinza"), sg.Button("Inverter Cores"),
-     sg.Button("Contraste"), sg.Button("Desfoque"),
-     sg.Button("Nitidez"), sg.Button("Detecção de Bordas")],
-    [sg.Text("Rotação (graus):"), sg.Input("0", size=(5,1), key="-ANGULO-"), sg.Button("Aplicar Rotação")],
-    [sg.Text("Redimensionar - Largura:"), sg.Input("300", size=(5,1), key="-LARG-"),
-     sg.Text("Altura:"), sg.Input("300", size=(5,1), key="-ALT-"), sg.Button("Aplicar Redimensionamento")],
-    [sg.Image(key="-ORIGINAL-"), sg.Image(key="-EDITADA-")]
-]
-
-janela = sg.Window("Visualizador de Imagens", layout, resizable=True)
+janela = sg.Window("Visualizador de Imagens", get_layout(), resizable=True)
 
 imagem_original = None
 imagem_editada = None
@@ -59,14 +45,15 @@ while True:
     elif evento == "Salvar Imagem" and imagem_editada is not None:
         salvar = sg.popup_get_file("Salvar como", save_as=True, file_types=(("PNG", "*.png"),))
         if salvar:
-            if len(imagem_editada.shape) == 2:
-                imagem_editada = cv2.cvtColor(imagem_editada, cv2.COLOR_GRAY2BGR)
-            cv2.imwrite(salvar, imagem_editada)
+            img_salvar = imagem_processada
+            if len(img_salvar.shape) == 2:
+                img_salvar = cv2.cvtColor(img_salvar, cv2.COLOR_GRAY2BGR)
+            cv2.imwrite(salvar, img_salvar)
             sg.popup("Imagem salva com sucesso!")
 
-    elif evento == "Escala de Cinza" and imagem_editada is not None:
-        imagem_editada = apply_cinza(imagem_editada, "")
-        janela["-EDITADA-"].update(data=imagem_para_bytes(imagem_editada))
+    elif evento == "Limpar Filtros" and imagem_original is not None:
+        imagem_processada = imagem_original.copy()
+        janela["-PROCESSED-"].update(data=imagem_para_bytes(imagem_processada))
 
     elif evento == "Inverter Cores" and imagem_editada is not None:
         imagem_editada = apply_inversao(imagem_editada, "")
